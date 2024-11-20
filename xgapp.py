@@ -6,14 +6,11 @@ from sklearn.preprocessing import LabelEncoder
 import numpy as np
 st.header('Авто машины бодит үнийг тогтоох нь Ml')
 
-# Моделийг ачаалах
 model = pk.load(open('modelX.pkl', 'rb'))
 cars_data = pd.read_csv('C:/Users/hp/Documents/Санхүү шинжилгээ/car/fdata.csv')
 
-# LabelEncoder-ийг ачаалах
 label_encoder = LabelEncoder()
 
-# Шинэ хэрэглэгчийн оруулсан өгөгдлийг streamlit-ийн selectbox болон text_input ашиглан авах
 Үйлдвэрлэгч = st.selectbox('Үйлдвэрлэгч', cars_data['Үйлдвэрлэгч'].unique())
 Загвар = st.selectbox('Загвар', cars_data['Загвар'].unique())
 Мотор = st.selectbox('Мотор', cars_data['Мотор'].unique())
@@ -31,7 +28,6 @@ label_encoder = LabelEncoder()
 Нөхцөл = st.selectbox('Нөхцөл', cars_data['Нөхцөл'].unique())
 Хаалга = st.selectbox('Хаалга', cars_data['Хаалга'].unique())
 
-# Хэрэглэгчийн оруулсан өгөгдлийг LabelEncoding ашиглан тоон утгаар хөрвүүлэх
 user_input_dict = {
     'Үйлдвэрлэгч': Үйлдвэрлэгч,
     'Загвар': Загвар,
@@ -51,21 +47,16 @@ user_input_dict = {
     'Хаалга': Хаалга
 }
 
-# Шинэ DataFrame үүсгэх
 user_input_df = pd.DataFrame(user_input_dict, index=[0])
 
-# Категори хувьсагчдыг LabelEncoding ашиглан тоон утгаар хөрвүүлэх
 categorical_columns = ['Үйлдвэрлэгч', 'Загвар', 'Мотор', 'Хурдны_хайрцаг', 'Хүрд', 'Төрөл', 'Өнгө', 
                        'Хөдөлгүүр', 'Салоны_өнгө', 'Лизинг', 'Хөтлөгч', 'Нөхцөл', 'Хаалга']
 
 for col in categorical_columns:
     user_input_df[col] = label_encoder.fit_transform(user_input_df[col])
 
-# Нумпигийн массив болгон хөрвүүлэх
 user_input_np = user_input_df.to_numpy()
 
-# Таамаглал хийх
 y_pred = model.predict(user_input_np)
 
-# Таамаглалын үр дүнг streamlit дээр харуулах
 st.write(f"Үнийн таамаглал: {y_pred[0]}")
